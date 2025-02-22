@@ -259,8 +259,11 @@ class plugins_stripe_public extends plugins_stripe_db
              * The payment is paid and isn't refunded or charged back.
              * At this point you'd probably want to start the process of delivering the product to the customer.
              */
+            $price = '';
+            $currency = 'EUR';
             foreach ($event['line_items']['data'] as $item) {
                 $price = $item['price_data']['unit_amount'] / 100; // Convertir en euros
+                $currency = $item['price_data']['currency'];
             }
 
             $payment_method = $event['payment_method_types'][0];
@@ -432,7 +435,7 @@ class plugins_stripe_public extends plugins_stripe_db
             if(isset($getPayment['status']) && $getPayment['status'] == 'paid') {
                 $result = [
                     'amount'    =>  $getPayment['amount'],
-                    'currency'  =>  "EUR"
+                    'currency'  =>  $getPayment['currency']
                 ];
 
                 foreach ($getPayment['metadata'] as $key => $value){
