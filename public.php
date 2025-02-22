@@ -151,7 +151,7 @@ class plugins_stripe_public extends plugins_stripe_db
             // ----- todo voir pour redirectUrl
             return [
                 //'webhookUrl' => $callback . '?webhook=true',
-                'redirectUrl' => $url . '?order='.$this->order.$redirect
+                'redirectUrl' => $url . '?order='.$setConfig['order'].$redirect
             ];
         }
         return [];
@@ -190,6 +190,7 @@ class plugins_stripe_public extends plugins_stripe_db
             'cancel_url' => $setUrl['redirectUrl'],
             'metadata' => [
                 //'cart_id' => $cart_id,
+                'order' =>  $config['order'],
                 'email' => $this->custom["email"],
                 //'customer_address' => json_encode($customer_address), // Encodage de l'adresse en JSON
             ],
@@ -252,6 +253,7 @@ class plugins_stripe_public extends plugins_stripe_db
             $getPayment = [];
             $event = json_decode($payload, true);
             $event_id = $event['id'];
+            $order_h = $event['order'];
 
             /*
              * The payment is paid and isn't refunded or charged back.
@@ -275,7 +277,8 @@ class plugins_stripe_public extends plugins_stripe_db
                     $this->add(
                         'history',
                         [
-                            'order_h' => $event_id,
+                            'order_h' => $order_h,
+                            'event_h' => $event_id,
                             'status_h' => 'paid'
                         ]
                     );
@@ -286,7 +289,8 @@ class plugins_stripe_public extends plugins_stripe_db
                     $this->add(
                         'history',
                         [
-                            'order_h' => $event_id,
+                            'order_h' => $order_h,
+                            'event_h' => $event_id,
                             'status_h' => 'canceled'
                         ]
                     );
@@ -299,7 +303,8 @@ class plugins_stripe_public extends plugins_stripe_db
                     $this->add(
                         'history',
                         [
-                            'order_h' => $event_id,
+                            'order_h' => $order_h,
+                            'event_h' => $event_id,
                             'status_h' => 'paid'
                         ]
                     );
@@ -309,7 +314,8 @@ class plugins_stripe_public extends plugins_stripe_db
                     $this->add(
                         'history',
                         [
-                            'order_h' => $event_id,
+                            'order_h' => $order_h,
+                            'event_h' => $event_id,
                             'status_h' => 'failed'
                         ]
                     );
@@ -471,7 +477,7 @@ class plugins_stripe_public extends plugins_stripe_db
                     'setName' => $this->template->getConfigVars('order_on') . ' ' . $collection['name'],
                     'amount' => $this->purchase['amount'],
                     'currency' => 'EUR',//$this->purchase['currency'],
-                    //'order' => $this->order,
+                    'order' => $this->order,
                     'quantity' => isset($this->custom['quantity']) ? $this->custom['quantity'] : 1,
                     'debug' => false//pre,none,printer
                 ];

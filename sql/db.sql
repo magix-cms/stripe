@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `mc_stripe` (
 CREATE TABLE IF NOT EXISTS `mc_stripe_history` (
   `id_stripe_h` int(7) UNSIGNED NOT NULL AUTO_INCREMENT,
   `order_h` varchar(50) NOT NULL,
+  `event_h` varchar(150) NOT NULL,
   `status_h` varchar(30) NOT NULL,
   `date_register` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id_stripe_h`)

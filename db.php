@@ -75,8 +75,8 @@ class plugins_stripe_db
                 break;
             case 'history':
 
-                $query = 'INSERT INTO mc_stripe_history (order_h,status_h)
-                VALUE(:order_h,:status_h)';
+                $query = 'INSERT INTO mc_stripe_history (order_h,event_h,status_h)
+                VALUE(:order_h,:event_h,:status_h)';
 
                 break;
             default:
