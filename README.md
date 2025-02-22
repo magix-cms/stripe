@@ -20,7 +20,7 @@ Ce plugin est dédié a Magix CMS et travail avec Stripe.
  * Décompresser l'archive dans le dossier "plugins" de magix cms
  * Connectez-vous dans l'administration de votre site internet
  * Cliquer sur extensions.
- * Cliquer sur installer Mollie, laisser faire l'auto installation
+ * Cliquer sur installer stripe, laisser faire l'auto installation
  * Il ne reste que la configuration du plugin pour correspondre avec vos données.
  
  Requirements
