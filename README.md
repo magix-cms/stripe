@@ -2,6 +2,7 @@
 
 Plugin Stripe for [magixcms](https://www.magix-cms.com) 3
 
+<img width="469" alt="Image" src="https://github.com/user-attachments/assets/338c1c3a-852c-4ac9-97ce-ef286e81fce8" />
 
 ### version 
 
