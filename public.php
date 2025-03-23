@@ -147,7 +147,7 @@ class plugins_stripe_public extends plugins_stripe_db
             }else{
                 $redirect = '';
             }
-            isset($this->redirect) ? '&redirect='.$this->redirect : '';
+            //isset($this->redirect) ? '&redirect='.$this->redirect : '';
             // ----- todo voir pour redirectUrl
             return [
                 //'webhookUrl' => $callback . '?webhook=true',
@@ -165,12 +165,16 @@ class plugins_stripe_public extends plugins_stripe_db
     public function createPayment($config){
 
         $data = $this->setItemsAccount();
-        Stripe\Stripe::setApiKey($data['apikey']);
+
+        \Stripe\Stripe::setApiKey($data['endpointkey']/*$data['apikey']*/);
 
         // Set redirect urls
         $setUrl = $this->setUrl($config);
 
         ### Creating a new payment.
+        $amount = $config['amount'];
+        $unit_amount = (int) ($amount * 100);
+
         $session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -179,21 +183,21 @@ class plugins_stripe_public extends plugins_stripe_db
                     'product_data' => [
                         'name' => $config['setName'],
                     ],
-                    'unit_amount' => $config['amount'], // Montant en centimes
+                    'unit_amount' => $unit_amount, // Montant en centimes
                 ],
                 'quantity' => $config['quantity'],
             ]],
             'mode' => 'payment',
-            "redirectUrl" => $setUrl['redirectUrl'],
+            //"redirectUrl" => $setUrl['redirectUrl'],
             //"webhookUrl"  => $setUrl['webhookUrl'],
             'success_url' => $setUrl['redirectUrl'],
             'cancel_url' => $setUrl['redirectUrl'],
             'metadata' => [
-                //'cart_id' => $cart_id,
+                'session_key_cart'=>$_COOKIE['mc_cart'],
                 'order' =>  $config['order'],
                 'email' => $this->custom["email"],
                 //'customer_address' => json_encode($customer_address), // Encodage de l'adresse en JSON
-            ],
+            ]
         ]);
 
 
@@ -220,7 +224,9 @@ class plugins_stripe_public extends plugins_stripe_db
 
         $data = $this->setItemsAccount();
 
-        Stripe\Stripe::setApiKey($data['apikey']);
+        \Stripe\Stripe::setApiKey($data['endpointkey']);
+
+        $secret_signing_key = $data['secret_signing_key'];//'whsec_';
 
         $payload = @file_get_contents('php://input');
         $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
@@ -228,19 +234,46 @@ class plugins_stripe_public extends plugins_stripe_db
 
         try {
             $event = \Stripe\Webhook::constructEvent(
-                $payload, $sig_header, $data['endpointkey']
+                $payload, $sig_header, $secret_signing_key
             );
+            /*$log = new debug_logger(MP_LOG_DIR);
+            $log->tracelog('type: '.$event->type);
+            if ($event->type == 'checkout.session.completed') {
+                $session = $event->data->object;
+                $paymentIntentId = $session->payment_intent;
+
+                $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+                $log->tracelog('status: '.$paymentIntent->status);
+            }*/
+
         } catch(\UnexpectedValueException $e) {
             // Invalid payload
-            http_response_code(400);
+            //http_response_code(400);
+            $logger = new debug_logger(MP_LOG_DIR);
+            $logger->log('php', 'error', 'An error has occured : '.$e->getMessage(), debug_logger::LOG_MONTH);
             exit();
         } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Invalid signature
-            error_log('⚠️  Webhook signature verification failed.');
-            http_response_code(400);
+            $logger = new debug_logger(MP_LOG_DIR);
+            $logger->log('php', 'error', 'Webhook signature verification failed. : '.$e->getMessage(), debug_logger::LOG_MONTH);
+            //error_log('⚠️  Webhook signature verification failed.');
+            //http_response_code(400);
             exit();
         }
+        /*
+        // Récupération de la langue à partir de l'URL
+        $uri = $_SERVER['REQUEST_URI'];
+        $lang = substr($uri, 1, 2); // Extrait les deux premiers caractères après le premier "/"
 
+        // Traitement de l'événement en fonction de la langue
+        if ($event->type == 'payment_intent.succeeded') {
+            $paymentIntent = $event->data->object;
+            if ($lang == 'fr') {
+                // ... Traiter le paiement réussi en français ...
+            } else if ($lang == 'en') {
+                // ... Traiter le paiement réussi en anglais ...
+            }
+        }*/
         // Handle the event (e.g., checkout.session.completed)
         /*if ($event->type == 'checkout.session.completed') {
             $session = $event->data->object;
@@ -251,43 +284,177 @@ class plugins_stripe_public extends plugins_stripe_db
 
         try {
             $getPayment = [];
-            $event = json_decode($payload, true);
-            $event_id = $event['id'];
-            $order_h = $event['order'];
+            $parseEvent = json_decode($payload, true);
+            $object = $parseEvent['data']['object'];
+            $event_id = $parseEvent['id'];
+            $order_h = $object['metadata']['order'];
+            $session_key_cart = $object['metadata']['session_key_cart'];
 
+            $log = new debug_logger(MP_LOG_DIR);
+            /*$log->tracelog('start captureOrder');
+            //$log->tracelog(($payload));
+            $log->tracelog(($event_id));
+            $log->tracelog($order_h);
+            $log->tracelog('end captureOrder');*/
             /*
              * The payment is paid and isn't refunded or charged back.
              * At this point you'd probably want to start the process of delivering the product to the customer.
              */
-            $price = '';
+            $price = $object['amount_total'];
             $currency = 'EUR';
-            foreach ($event['line_items']['data'] as $item) {
+            /*foreach ($event['line_items']['data'] as $item) {
                 $price = $item['price_data']['unit_amount'] / 100; // Convertir en euros
                 $currency = $item['price_data']['currency'];
-            }
+            }*/
 
-            $payment_method = $event['payment_method_types'][0];
+
+            $payment_method = $object['payment_method_types'][0] ?? 'test';
             $getPayment = [
                 'amount' => $price,
                 'method' => $payment_method,
-                'metadata' => $event['metadata'],
-                'status' => 'paid'
+                'metadata' => $object['metadata'],
+                'status' => 'canceled'
             ];
 
-            switch ($event['type']) {
-                case 'payment_intent.succeeded':
+            /*$log->tracelog('start getPayment');
+            $log->tracelog(json_encode($getPayment));
+            $log->tracelog('status: '.$object['status']);
+            $log->tracelog('end getPayment');*/
+            if($event_id) {
+                switch ($object['payment_status']) {
+                    case 'paid':
+                        try {
+                            $session = $event->data->object;
+                            $paymentIntentId = $session->payment_intent;
+                            $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+                            if (!$paymentIntent->review) {
+                                if ($paymentIntent->status == 'succeeded') {
+                                    // Le paiement a réussi
+                                    $this->add(
+                                        'history',
+                                        [
+                                            'session_key_cart'=>$session_key_cart,
+                                            'order_h' => $order_h,
+                                            'event_h' => $event_id,
+                                            'status_h' => 'paid'
+                                        ]
+                                    );
+                                    $getPayment = [
+                                        'amount' => $price,
+                                        'method' => $payment_method,
+                                        'metadata' => $object['metadata'],
+                                        'status' => 'paid'
+                                    ];
+                                    // ... Traiter le paiement réussi ...
+                                } else {
+                                    // Le paiement a échoué
+                                    $this->add(
+                                        'history',
+                                        [
+                                            'session_key_cart'=>$session_key_cart,
+                                            'order_h' => $order_h,
+                                            'event_h' => $event_id,
+                                            'status_h' => 'canceled'
+                                        ]
+                                    );
+                                    $getPayment = [
+                                        'status' => 'canceled'
+                                    ];
+                                    // ... Traiter le paiement échoué ...
+                                }
+                            }
+                        } catch (\Stripe\Exception\ApiErrorException $e) {
+                            // Erreur lors de la récupération de l'objet payment_intent
+                            $logger = new debug_logger(MP_LOG_DIR);
+                            $logger->log('php', 'error', 'An error has occured : ' . $e->getMessage(), debug_logger::LOG_MONTH);
+                        }
+                        break;
+                    case 'unpaid':
+                    default:
+                        // Le paiement a échoué ou a été annulé (canceled/failed)
+                        $this->add(
+                            'history',
+                            [
+                                'session_key_cart'=>$session_key_cart,
+                                'order_h' => $order_h,
+                                'event_h' => $event_id,
+                                'status_h' => 'canceled'
+                            ]
+                        );
+                        $getPayment = [
+                            'status' => 'canceled'
+                        ];
+                        break;
+                }
+            }else{
+                // Le paiement a échoué
+                $this->add(
+                    'history',
+                    [
+                        'session_key_cart'=>$session_key_cart,
+                        'order_h' => $order_h,
+                        'event_h' => $event_id,
+                        'status_h' => 'canceled'
+                    ]
+                );
+                $getPayment = [
+                    'status' => 'canceled'
+                ];
+            }
+            /*if(isset($_GET['session_id'])){
+                $session = \Stripe\Checkout\Session::retrieve($_GET['session_id']);
+                $log = new debug_logger(MP_LOG_DIR);
+                $log->tracelog('type: '.$session->cancel_url);
+            }*/
+           /* switch ($object['payment_status']) {
+                case 'paid'://'payment_intent.succeeded':
                     // Le paiement a réussi (paid)
-                    $this->add(
-                        'history',
-                        [
-                            'order_h' => $order_h,
-                            'event_h' => $event_id,
-                            'status_h' => 'paid'
-                        ]
-                    );
-                    break;
-                case 'payment_intent.payment_failed':
-                case 'payment_intent.canceled':
+                    try {
+                        $session = $event->data->object;
+                        $paymentIntentId = $session->payment_intent;
+                        $paymentIntent = \Stripe\PaymentIntent::retrieve($paymentIntentId);
+                        if (!$paymentIntent->review) {
+                            if ($paymentIntent->status == 'succeeded') {
+                                // Le paiement a réussi
+                                $this->add(
+                                    'history',
+                                    [
+                                        'order_h' => $order_h,
+                                        'event_h' => $event_id,
+                                        'status_h' => 'paid'
+                                    ]
+                                );
+                                $getPayment = [
+                                    'amount' => $price,
+                                    'method' => $payment_method,
+                                    'metadata' => $object['metadata'],
+                                    'status' => 'paid'
+                                ];
+                                // ... Traiter le paiement réussi ...
+                            } else {
+                                // Le paiement a échoué
+                                $this->add(
+                                    'history',
+                                    [
+                                        'order_h' => $order_h,
+                                        'event_h' => $event_id,
+                                        'status_h' => 'canceled'
+                                    ]
+                                );
+                                $getPayment = [
+                                    'status' => 'canceled'
+                                ];
+                                // ... Traiter le paiement échoué ...
+                            }
+                        }
+                    } catch (\Stripe\Exception\ApiErrorException $e) {
+                        // Erreur lors de la récupération de l'objet payment_intent
+                        $logger = new debug_logger(MP_LOG_DIR);
+                        $logger->log('php', 'error', 'An error has occured : '.$e->getMessage(), debug_logger::LOG_MONTH);
+                    }
+
+                    break;*/
+                /*case 'unpaid':
                     // Le paiement a échoué ou a été annulé (canceled/failed)
                     $this->add(
                         'history',
@@ -328,8 +495,8 @@ class plugins_stripe_public extends plugins_stripe_db
                     break;
                 //default:
                 // Autres événements (à gérer selon vos besoins)
-                //break;
-            }
+                //break;*/
+            //}
 
             if(isset($config['debug']) && $config['debug'] == 'printer'){
                 $log = new debug_logger(MP_LOG_DIR);
@@ -386,8 +553,15 @@ class plugins_stripe_public extends plugins_stripe_db
         }
     }
     public function getPaymentStatus() : string{
-        $mollie = $this->getItems('lastHistory',NULL,'one',false);
-        return $mollie['status_h'];
+        $stripe = $this->getItems('lastHistory',['session_key_cart'=>$_COOKIE['mc_cart']],'one',false);
+        $status = 'pending';
+
+        if($stripe != null){
+            $status = $stripe['status_h'];
+        }
+        /*$log = new debug_logger(MP_LOG_DIR);
+        $log->tracelog($status);*/
+        return $status;
     }
     /**
      *
@@ -399,19 +573,21 @@ class plugins_stripe_public extends plugins_stripe_db
                 $stripe = $this->getItems('history',array('order_h'=>$_GET['order']),'one',false);
 
                 $status = 'pending';
-                switch ($stripe['status_h']) {
-                    case 'paid':
-                        $status = 'success';
-                        break;
-                    case 'failed':
-                        $status = 'error';
-                        break;
-                    case 'canceled':
-                    case 'expired':
-                        $status = 'canceled';
-                        break;
+                if($stripe != NULL) {
+                    switch ($stripe['status_h']) {
+                        case 'paid':
+                            $status = 'success';
+                            break;
+                        case 'failed':
+                            $status = 'error';
+                            break;
+                        case 'canceled':
+                        case 'expired':
+                        default:
+                            $status = 'canceled';
+                            break;
+                    }
                 }
-
                 header("location:/$this->lang/cartpay/order/?step=done_step&status=$status");
             }else{
                 $stripe = $this->getItems('history',array('order_h'=>$_GET['order']),'one',false);

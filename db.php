@@ -38,13 +38,13 @@ class plugins_stripe_db
         elseif ($config['context'] === 'one') {
             switch ($config['type']) {
                 case 'root':
-                    $query = 'SELECT * FROM mc_stripe ORDER BY id_mollie DESC LIMIT 0,1';
+                    $query = 'SELECT * FROM mc_stripe ORDER BY id_stripe DESC LIMIT 0,1';
                     break;
                 case 'history':
                     $query = 'SELECT * FROM mc_stripe_history WHERE order_h = :order_h';
                     break;
                 case 'lastHistory':
-                    $query = 'SELECT * FROM mc_stripe_history ORDER BY id_stripe_h DESC LIMIT 0,1';
+                    $query = 'SELECT * FROM mc_stripe_history WHERE session_key_cart = :session_key_cart ORDER BY id_stripe_h DESC LIMIT 0,1';
                     break;
                 default:
                     return false;
@@ -75,8 +75,8 @@ class plugins_stripe_db
                 break;
             case 'history':
 
-                $query = 'INSERT INTO mc_stripe_history (order_h,event_h,status_h)
-                VALUE(:order_h,:event_h,:status_h)';
+                $query = 'INSERT INTO mc_stripe_history (session_key_cart,order_h,event_h,status_h)
+                VALUE(:session_key_cart,:order_h,:event_h,:status_h)';
 
                 break;
             default:
