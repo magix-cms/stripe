@@ -28,3 +28,5 @@ Ce plugin est dédié a Magix CMS et travail avec Stripe.
    * CURL (http://php.net/manual/en/book.curl.php)
    
 ## Aperçu
+
+<img width="791" alt="Image" src="https://github.com/user-attachments/assets/6b165f43-6356-4a43-a4a8-6a4002d78335" />
