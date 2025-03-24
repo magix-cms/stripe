@@ -4,7 +4,7 @@
 {block name="description"}{if $pages.seo.description}{$pages.seo.description}{elseif !empty($pages.resume)}{$pages.resume}{elseif !empty($pages.content)}{$pages.content|strip_tags|truncate:100:'...'}{/if}{/block}
 {block name='article'}
     {strip}
-    {switch $mollie.status_h}
+    {switch $stripe.status_h}
     {case 'paid' break}
         {$msg = {#status_accept_msg#}}
         {$type = 'success'}

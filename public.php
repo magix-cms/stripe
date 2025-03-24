@@ -218,7 +218,7 @@ class plugins_stripe_public extends plugins_stripe_db
 
     /**
      * @param $config
-     * @throws \Mollie\Api\Exceptions\ApiException
+     * @return array|string[]
      */
     public function captureOrder($config) :array{
 
