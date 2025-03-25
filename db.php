@@ -69,8 +69,8 @@ class plugins_stripe_db
         switch ($type) {
             case 'config':
 
-                $query = 'INSERT INTO mc_stripe (apikey,endpointkey)
-                VALUE(:apikey,:endpointkey)';
+                $query = 'INSERT INTO mc_stripe (apikey, endpointkey, secret_signing_key)
+                VALUE(:apikey,:endpointkey, :secret_signing_key)';
 
                 break;
             case 'history':
@@ -106,7 +106,8 @@ class plugins_stripe_db
                 $query = 'UPDATE mc_stripe
                     SET 
                         apikey=:apikey,
-                        endpointkey=:endpointkey
+                        endpointkey=:endpointkey,
+                        secret_signing_key=:secret_signing_key
                     WHERE id_stripe=:id';
                 break;
             default:

@@ -42,6 +42,17 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-10">
+                                    <div class="form-group">
+                                        <label for="apikey">secret signing key :</label>
+                                        <div class="input-group">
+                                            <div class="input-group-addon"><span class="fa fa-key"></span></div>
+                                            <input type="text" class="form-control" id="secret_signing_key" name="secret_signing_key" value="{$stripe.secret_signing_key}" size="50" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div id="submit">
                                 <button class="btn btn-main-theme" type="submit" name="action" value="edit">{#save#|ucfirst}</button>
                             </div>
