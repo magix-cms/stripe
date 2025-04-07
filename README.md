@@ -6,7 +6,7 @@ Plugin Stripe for [magixcms](https://www.magix-cms.com) 3
 
 ### version 
 
-[![release](https://img.shields.io/github/release/magix-cms/stripe.svg)](https://github.com/magix-cms/mollie/releases/latest)
+[![release](https://img.shields.io/github/release/magix-cms/stripe.svg)](https://github.com/magix-cms/stripe/releases/latest)
 
 Authors
 -------
