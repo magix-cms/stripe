@@ -221,7 +221,7 @@ class plugins_stripe_public extends plugins_stripe_db
      * @return array|string[]
      */
     public function captureOrder($config) :array{
-
+        ///fr/stripe/?webhook=true
         $data = $this->setItemsAccount();
 
         \Stripe\Stripe::setApiKey($data['endpointkey']);
@@ -601,7 +601,7 @@ class plugins_stripe_public extends plugins_stripe_db
             }
 
         }elseif(isset($this->webhook)){
-
+            ///fr/stripe/?webhook=true
             $getPayment = $this->captureOrder(
                 array(
                     'debug'=> false
