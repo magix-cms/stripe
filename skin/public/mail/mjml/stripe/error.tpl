@@ -1,8 +1,8 @@
 <!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" style="background: #EEEEEE;">
+<html lang="und" dir="auto" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" style="background: #EEEEEE;">
 
 <head>
-  <title> {if isset($title_mail)}{$title_mail}{/if} </title>
+  <title>{if isset($title_mail)}{$title_mail}{/if}</title>
   <!--[if !mso]><!-->
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <!--<![endif]-->
@@ -40,26 +40,28 @@
       display: block;
       margin: 13px 0;
     }
+
   </style>
   <!--[if mso]>
-        <noscript>
-        <xml>
-        <o:OfficeDocumentSettings>
-          <o:AllowPNG/>
-          <o:PixelsPerInch>96</o:PixelsPerInch>
-        </o:OfficeDocumentSettings>
-        </xml>
-        </noscript>
-        <![endif]-->
+    <noscript>
+    <xml>
+    <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
   <!--[if lte mso 11]>
-        <style type="text/css">
-          .mj-outlook-group-fix { width:100% !important; }
-        </style>
-        <![endif]-->
+    <style type="text/css">
+      .mj-outlook-group-fix { width:100% !important; }
+    </style>
+    <![endif]-->
   <!--[if !mso]><!-->
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet" type="text/css">
   <style type="text/css">
     @import url(https://fonts.googleapis.com/css?family=Roboto:300,400,500);
+
   </style>
   <!--<![endif]-->
   <style type="text/css">
@@ -74,6 +76,7 @@
         max-width: 50%;
       }
     }
+
   </style>
   <style media="screen and (min-width:480px)">
     .moz-text-html .mj-column-per-100 {
@@ -85,13 +88,12 @@
       width: 50% !important;
       max-width: 50%;
     }
-  </style>
-  <style type="text/css">
+
   </style>
 </head>
 
 <body style="word-spacing: normal; background-color: #EEEEEE; background: #EEEEEE;">
-  <div style="background-color:#EEEEEE;">
+  <div style="background-color:#EEEEEE;" lang="und" dir="auto">
     <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" class="" role="presentation" style="width:600px;" width="600" bgcolor="#EEEEEE" ><tr><td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;"><![endif]-->
     <div style="background:#EEEEEE;background-color:#EEEEEE;margin:0px auto;max-width:600px;">
       <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#EEEEEE;background-color:#EEEEEE;width:100%;">
@@ -201,14 +203,13 @@
                                                   <table border="0" cellpadding="0" cellspacing="0" role="presentation" style width="100%">
                                                     <tr>
                                                       <td align="center" style="font-size:0px;padding:0;word-break:break-word;">
-                                                        <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"><tr><![endif]--> {if isset($companyData['socials']['facebook'])}
-                                                        <!--[if mso | IE]><td><![endif]-->
+                                                        <!--[if mso | IE]><table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation"><tr><![endif]--> {if isset($companyData['socials']['facebook']['url'])} <!--[if mso | IE]><td><![endif]-->
                                                         <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                           <tr>
                                                             <td style="padding:4px;">
                                                               <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A1A0A0;border-radius:3px;width:30px;">
                                                                 <tr>
-                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="https://www.facebook.com/sharer/sharer.php?u={$companyData.socials.facebook}" target="_blank">
+                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="https://www.facebook.com/sharer/sharer.php?u={$companyData.socials.facebook.url}" target="_blank">
                                                                       <img height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/facebook.png" style="border-radius:3px;display:block;" width="30">
                                                                     </a> </td>
                                                                 </tr>
@@ -216,14 +217,13 @@
                                                             </td>
                                                           </tr>
                                                         </table>
-                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['twitter'])}
-                                                        <!--[if mso | IE]><td><![endif]-->
+                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['twitter']['url'])} <!--[if mso | IE]><td><![endif]-->
                                                         <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                           <tr>
                                                             <td style="padding:4px;">
                                                               <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A1A0A0;border-radius:3px;width:30px;">
                                                                 <tr>
-                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="https://twitter.com/home?status={$companyData.socials.twitter}" target="_blank">
+                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="https://twitter.com/home?status={$companyData.socials.twitter.url}" target="_blank">
                                                                       <img height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png" style="border-radius:3px;display:block;" width="30">
                                                                     </a> </td>
                                                                 </tr>
@@ -231,14 +231,13 @@
                                                             </td>
                                                           </tr>
                                                         </table>
-                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['linkedin'])}
-                                                        <!--[if mso | IE]><td><![endif]-->
+                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['linkedin']['url'])} <!--[if mso | IE]><td><![endif]-->
                                                         <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                           <tr>
                                                             <td style="padding:4px;">
                                                               <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A1A0A0;border-radius:3px;width:30px;">
                                                                 <tr>
-                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url={$companyData.socials.linkedin}&amp;title=&amp;summary=&amp;source=" target="_blank">
+                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url={$companyData.socials.linkedin.url}&amp;title=&amp;summary=&amp;source=" target="_blank">
                                                                       <img height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/linkedin.png" style="border-radius:3px;display:block;" width="30">
                                                                     </a> </td>
                                                                 </tr>
@@ -246,14 +245,13 @@
                                                             </td>
                                                           </tr>
                                                         </table>
-                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['pinterest'])}
-                                                        <!--[if mso | IE]><td><![endif]-->
+                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['pinterest']['url'])} <!--[if mso | IE]><td><![endif]-->
                                                         <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                           <tr>
                                                             <td style="padding:4px;">
                                                               <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A1A0A0;border-radius:3px;width:30px;">
                                                                 <tr>
-                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="https://pinterest.com/pin/create/button/?url={$companyData.socials.pinterest}&amp;media=&amp;description=" target="_blank">
+                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="https://pinterest.com/pin/create/button/?url={$companyData.socials.pinterest.url}&amp;media=&amp;description=" target="_blank">
                                                                       <img height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/pinterest.png" style="border-radius:3px;display:block;" width="30">
                                                                     </a> </td>
                                                                 </tr>
@@ -261,14 +259,13 @@
                                                             </td>
                                                           </tr>
                                                         </table>
-                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['instagram'])}
-                                                        <!--[if mso | IE]><td><![endif]-->
+                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['instagram']['url'])} <!--[if mso | IE]><td><![endif]-->
                                                         <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                           <tr>
                                                             <td style="padding:4px;">
                                                               <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A1A0A0;border-radius:3px;width:30px;">
                                                                 <tr>
-                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="{$companyData.socials.instagram}" target="_blank">
+                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="{$companyData.socials.instagram.url}" target="_blank">
                                                                       <img height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/instagram.png" style="border-radius:3px;display:block;" width="30">
                                                                     </a> </td>
                                                                 </tr>
@@ -276,14 +273,13 @@
                                                             </td>
                                                           </tr>
                                                         </table>
-                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['github'])}
-                                                        <!--[if mso | IE]><td><![endif]-->
+                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['github']['url'])} <!--[if mso | IE]><td><![endif]-->
                                                         <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                           <tr>
                                                             <td style="padding:4px;">
                                                               <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A1A0A0;border-radius:3px;width:30px;">
                                                                 <tr>
-                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="{$companyData.socials.github}" target="_blank">
+                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="{$companyData.socials.github.url}" target="_blank">
                                                                       <img height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/github.png" style="border-radius:3px;display:block;" width="30">
                                                                     </a> </td>
                                                                 </tr>
@@ -291,14 +287,13 @@
                                                             </td>
                                                           </tr>
                                                         </table>
-                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['soundcloud'])}
-                                                        <!--[if mso | IE]><td><![endif]-->
+                                                        <!--[if mso | IE]></td><![endif]--> {/if} {if isset($companyData['socials']['soundcloud']['url'])} <!--[if mso | IE]><td><![endif]-->
                                                         <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="float:none;display:inline-table;">
                                                           <tr>
                                                             <td style="padding:4px;">
                                                               <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#A1A0A0;border-radius:3px;width:30px;">
                                                                 <tr>
-                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="{$companyData.socials.soundcloud}" target="_blank">
+                                                                  <td style="font-size:0;height:30px;vertical-align:middle;width:30px;"> <a href="{$companyData.socials.soundcloud.url}" target="_blank">
                                                                       <img height="30" src="https://www.mailjet.com/images/theme/v1/icons/ico-social/soundcloud.png" style="border-radius:3px;display:block;" width="30">
                                                                     </a> </td>
                                                                 </tr>
@@ -306,8 +301,7 @@
                                                             </td>
                                                           </tr>
                                                         </table>
-                                                        <!--[if mso | IE]></td><![endif]--> {/if}
-                                                        <!--[if mso | IE]></tr></table><![endif]-->
+                                                        <!--[if mso | IE]></td><![endif]--> {/if} <!--[if mso | IE]></tr></table><![endif]-->
                                                       </td>
                                                     </tr>
                                                   </table>
@@ -343,7 +337,7 @@
                           <tbody>
                             <tr>
                               <td align="left" style="font-size:0px;padding:10px 25px;padding-top:0;word-break:break-word;">
-                                <div style="font-family:Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:11px;font-weight:400;line-height:23px;text-align:left;color:{$light_grey};">{#call_us_at#}<br>{$companyData['contact']['phone']}<br> {if $companyData['contact']['mobile']}{#call_us_at#}<br>{$companyData['contact']['mobile']}<br>{/if} {#email_us_at#}<br>{$companyData['contact']['mail']}</div>
+                                <div style="font-family:Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:11px;font-weight:400;line-height:23px;text-align:left;color:{$light_grey};">{if $companyData['contact']['phone']}{#call_us_at#}<br>{$companyData['contact']['phone']}<br>{/if} {if $companyData['contact']['mobile']}{#call_us_at#}<br>{$companyData['contact']['mobile']}<br>{/if} {#email_us_at#}<br>{$companyData['contact']['mail']}</div>
                               </td>
                             </tr>
                           </tbody>

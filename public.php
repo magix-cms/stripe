@@ -174,7 +174,15 @@ class plugins_stripe_public extends plugins_stripe_db
         ### Creating a new payment.
         $amount = $config['amount'];
         $unit_amount = (int) ($amount * 100);
-
+        if(isset($_COOKIE['mc_cart'])){
+            $this->custom['session_key_cart'] = $_COOKIE['mc_cart'];
+            $this->custom['order'] = $config['order'];
+        }
+        /*
+         * 'session_key_cart'=>$_COOKIE['mc_cart'],
+                'order' =>  $config['order'],
+                'email' => $this->custom["email"],
+         * */
         $session = \Stripe\Checkout\Session::create([
             'payment_method_types' => ['card'],
             'line_items' => [[
@@ -192,12 +200,8 @@ class plugins_stripe_public extends plugins_stripe_db
             //"webhookUrl"  => $setUrl['webhookUrl'],
             'success_url' => $setUrl['redirectUrl'],
             'cancel_url' => $setUrl['redirectUrl'],
-            'metadata' => [
-                'session_key_cart'=>$_COOKIE['mc_cart'],
-                'order' =>  $config['order'],
-                'email' => $this->custom["email"],
+            'metadata' => $this->custom
                 //'customer_address' => json_encode($customer_address), // Encodage de l'adresse en JSON
-            ]
         ]);
 
 
@@ -313,7 +317,8 @@ class plugins_stripe_public extends plugins_stripe_db
                 'amount' => $price,
                 'method' => $payment_method,
                 'metadata' => $object['metadata'],
-                'status' => 'canceled'
+                'status' => 'canceled',
+                'currency' => $object['currency']
             ];
 
             /*$log->tracelog('start getPayment');
@@ -343,7 +348,8 @@ class plugins_stripe_public extends plugins_stripe_db
                                         'amount' => $price,
                                         'method' => $payment_method,
                                         'metadata' => $object['metadata'],
-                                        'status' => 'paid'
+                                        'status' => 'paid',
+                                        'currency' => $object['currency']
                                     ];
                                     // ... Traiter le paiement réussi ...
                                 } else {
@@ -552,6 +558,10 @@ class plugins_stripe_public extends plugins_stripe_db
             }
         }
     }
+
+    /**
+     * @return string
+     */
     public function getPaymentStatus() : string{
         $stripe = $this->getItems('lastHistory',['session_key_cart'=>$_COOKIE['mc_cart']],'one',false);
         $status = 'pending';
@@ -610,7 +620,7 @@ class plugins_stripe_public extends plugins_stripe_db
 
             if(isset($getPayment['status']) && $getPayment['status'] == 'paid') {
                 $result = [
-                    'amount'    =>  $getPayment['amount'],
+                    'amount'    =>  ($getPayment['amount'] / 100),
                     'currency'  =>  $getPayment['currency']
                 ];
 
@@ -629,7 +639,7 @@ class plugins_stripe_public extends plugins_stripe_db
                     $about = new frontend_model_about($this->template);
                     $collection = $about->getCompanyData();
                     //$collection['contact']['mail']
-                    $this->send_email($result['email'], 'admin', $result);
+                    //$this->send_email($result['email'], 'admin', $result);
                     /*if(isset($collection['contact']['mail']) && !empty($collection['contact']['mail'])){
                         $this->send_email($collection['contact']['mail'], 'admin', $result);
                     }*/
@@ -649,7 +659,6 @@ class plugins_stripe_public extends plugins_stripe_db
                 $this->template->configLoad();
 
                 $collection = $this->about->getCompanyData();
-
                 // config data for payment
                 $config = [
                     'plugin' => 'stripe',
@@ -657,7 +666,7 @@ class plugins_stripe_public extends plugins_stripe_db
                     'amount' => $this->purchase['amount'],
                     'currency' => 'EUR',//$this->purchase['currency'],
                     'order' => $this->order,
-                    'quantity' => isset($this->custom['quantity']) ? $this->custom['quantity'] : 1,
+                    'quantity' => $this->custom['quantity'] ?? 1,
                     'debug' => false//pre,none,printer
                 ];
                 //print_r($config);
