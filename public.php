@@ -623,8 +623,9 @@ class plugins_stripe_public extends plugins_stripe_db
                     'amount'    =>  ($getPayment['amount'] / 100),
                     'currency'  =>  $getPayment['currency']
                 ];
+                $metadata = $getPayment['metadata'];
 
-                foreach ($getPayment['metadata'] as $key => $value){
+                foreach ($metadata as $key => $value){
                     $result[$key] = $value;
                 }
 
@@ -636,10 +637,12 @@ class plugins_stripe_public extends plugins_stripe_db
 
                 if(isset($result['email'])){
                     $log->tracelog('email true');
-                    $about = new frontend_model_about($this->template);
-                    $collection = $about->getCompanyData();
                     //$collection['contact']['mail']
-                    //$this->send_email($result['email'], 'admin', $result);
+                    if(!isset($result['session_key_cart'])) {
+                        $about = new frontend_model_about($this->template);
+                        $collection = $about->getCompanyData();
+                        $this->send_email($result['email'], 'admin', $result);
+                    }
                     /*if(isset($collection['contact']['mail']) && !empty($collection['contact']['mail'])){
                         $this->send_email($collection['contact']['mail'], 'admin', $result);
                     }*/
