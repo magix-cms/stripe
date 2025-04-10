@@ -623,7 +623,7 @@ class plugins_stripe_public extends plugins_stripe_db
                     'amount'    =>  ($getPayment['amount'] / 100),
                     'currency'  =>  $getPayment['currency']
                 ];
-                $metadata = $getPayment['metadata'];
+                $metadata = (array) $getPayment['metadata'];
 
                 foreach ($metadata as $key => $value){
                     $result[$key] = $value;
