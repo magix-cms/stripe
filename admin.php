@@ -26,7 +26,8 @@ class plugins_stripe_admin extends plugins_stripe_db
         $action,
         $controller,
         $apikey,
-        $endpointkey;
+        $endpointkey,
+        $secret_signing_key;
     /**
      * constructeur
      */
@@ -50,6 +51,9 @@ class plugins_stripe_admin extends plugins_stripe_db
         }
         if (http_request::isPost('endpointkey')) {
             $this->endpointkey = $formClean->simpleClean($_POST['endpointkey']);
+        }
+        if (http_request::isPost('secret_signing_key')) {
+            $this->secret_signing_key = $formClean->simpleClean($_POST['secret_signing_key']);
         }
     }
 
@@ -110,6 +114,7 @@ class plugins_stripe_admin extends plugins_stripe_db
                [
                    'apikey'      =>  $this->apikey,
                    'endpointkey' =>  $this->endpointkey,
+                   'secret_signing_key' =>  $this->secret_signing_key,
                     'id'         =>  $setData['id_stripe']
                ]
             );
@@ -118,7 +123,8 @@ class plugins_stripe_admin extends plugins_stripe_db
                 'config',
                 [
                     'apikey'      =>  $this->apikey,
-                    'endpointkey' =>  $this->endpointkey
+                    'endpointkey' =>  $this->endpointkey,
+                    'secret_signing_key' =>  $this->secret_signing_key
                 ]
             );
         }
